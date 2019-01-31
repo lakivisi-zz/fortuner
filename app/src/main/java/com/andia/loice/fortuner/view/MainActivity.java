@@ -26,7 +26,6 @@ public class MainActivity extends DaggerAppCompatActivity {
     ActivityMainBinding activityMainBinding;
     ContentMainBinding contentMainBinding;
 
-
     private FortuneViewModel fortuneViewModel;
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -39,6 +38,7 @@ public class MainActivity extends DaggerAppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
@@ -48,7 +48,7 @@ public class MainActivity extends DaggerAppCompatActivity {
         writerText = contentMainBinding.writerInfo;
         fab = activityMainBinding.fab;
 
-        setSupportActionBar(toolbar);
+//        setSupportActionBar(toolbar);
 
         fortuneViewModel = ViewModelProviders.of(this, viewModelFactory).get(FortuneViewModel.class);
 
