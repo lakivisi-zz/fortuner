@@ -5,16 +5,16 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.andia.loice.fortuner.R;
 import com.andia.loice.fortuner.databinding.ActivityMainBinding;
-import com.andia.loice.fortuner.databinding.ContentMainBinding;
 import com.andia.loice.fortuner.model.data.Fortune;
 import com.andia.loice.fortuner.viewmodel.FortuneViewModel;
 
@@ -24,16 +24,16 @@ import dagger.android.support.DaggerAppCompatActivity;
 
 public class MainActivity extends DaggerAppCompatActivity {
     ActivityMainBinding activityMainBinding;
-    ContentMainBinding contentMainBinding;
 
     private FortuneViewModel fortuneViewModel;
     @Inject
     ViewModelProvider.Factory viewModelFactory;
 
     private Toolbar toolbar;
-    private FloatingActionButton fab;
     private TextView fortuneText;
     private TextView writerText;
+    private ProgressBar progressBar;
+    private ConstraintLayout contentMain;
 
 
     @Override
@@ -42,29 +42,27 @@ public class MainActivity extends DaggerAppCompatActivity {
         super.onCreate(savedInstanceState);
 
         activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        contentMainBinding = DataBindingUtil.setContentView(this, R.layout.content_main);
-        toolbar = activityMainBinding.toolbar;
-        fortuneText = contentMainBinding.fortuneText;
-        writerText = contentMainBinding.writerInfo;
-        fab = activityMainBinding.fab;
 
-//        setSupportActionBar(toolbar);
+        toolbar = activityMainBinding.toolbar;
+        fortuneText = activityMainBinding.fortuneText;
+        writerText = activityMainBinding.writerInfo;
+        progressBar = activityMainBinding.loadingPage;
+        contentMain = activityMainBinding.contentMain;
+
+        setSupportActionBar(toolbar);
+
+        progressBar.setVisibility(View.VISIBLE);
+
 
         fortuneViewModel = ViewModelProviders.of(this, viewModelFactory).get(FortuneViewModel.class);
 
+
         fetchFortune();
 
-        fab.setOnClickListener(view -> {
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-        });
     }
 
     private void fetchFortune() {
-
-        final Observer<Fortune> fortuneObserver = results -> {
-            displayFortune(results);
-        };
+        final Observer<Fortune> fortuneObserver = results -> displayFortune(results);
 
         fortuneViewModel.getFortunes().observe(this, fortuneObserver);
 
@@ -72,6 +70,7 @@ public class MainActivity extends DaggerAppCompatActivity {
 
     private void displayFortune(Fortune fortune) {
 
+        progressBar.setVisibility(View.GONE);
         fortuneText.setText(fortune.getFortune());
         writerText.setText(fortune.getWriter());
 
@@ -92,7 +91,9 @@ public class MainActivity extends DaggerAppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_refresh) {
+            progressBar.setVisibility(View.VISIBLE);
+            fetchFortune();
             return true;
         }
 

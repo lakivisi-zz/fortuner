@@ -16,4 +16,8 @@ public class FortuneResponse {
     public void setmFortune(List<String> mFortune) {
         this.mFortune = mFortune;
     }
+
+    public FortuneResponse(List<String> mFortune) {
+        this.mFortune = mFortune;
+    }
 }
