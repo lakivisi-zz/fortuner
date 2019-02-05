@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +34,7 @@ public class MainActivity extends DaggerAppCompatActivity {
     private TextView fortuneText;
     private TextView writerText;
     private ProgressBar progressBar;
+    private FloatingActionButton refreshButton;
     private ConstraintLayout contentMain;
 
 
@@ -47,17 +49,27 @@ public class MainActivity extends DaggerAppCompatActivity {
         fortuneText = activityMainBinding.fortuneText;
         writerText = activityMainBinding.writerInfo;
         progressBar = activityMainBinding.loadingPage;
+        refreshButton = activityMainBinding.fab;
         contentMain = activityMainBinding.contentMain;
 
         setSupportActionBar(toolbar);
 
         progressBar.setVisibility(View.VISIBLE);
-
+        contentMain.setVisibility(View.GONE);
 
         fortuneViewModel = ViewModelProviders.of(this, viewModelFactory).get(FortuneViewModel.class);
 
+        refreshButton.setOnClickListener(view -> {
+            progressBar.setVisibility(View.VISIBLE);
+            fetchFortune();
+        });
+
+
+        progressBar.setVisibility(View.GONE);
+
 
         fetchFortune();
+
 
     }
 
@@ -71,6 +83,8 @@ public class MainActivity extends DaggerAppCompatActivity {
     private void displayFortune(Fortune fortune) {
 
         progressBar.setVisibility(View.GONE);
+        contentMain.setVisibility(View.VISIBLE);
+
         fortuneText.setText(fortune.getFortune());
         writerText.setText(fortune.getWriter());
 
