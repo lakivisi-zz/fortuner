@@ -20,8 +20,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isClickable;
+import static android.support.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
@@ -77,4 +81,27 @@ public class MainActivityTest {
         textView2.check(matches(withText("fortuner")));
 
     }
+
+    @Test
+    public void clickingtherefreshbuttonsShouldWorkAppropriately() throws InterruptedException {
+
+        onView(
+                withId(R.id.fab))
+                .check(matches(allOf(isCompletelyDisplayed(), isClickable(),
+                        isEnabled())));
+
+        onView(
+                withId(R.id.action_refresh))
+                .check(matches(allOf(isCompletelyDisplayed(),
+                        isClickable(),
+                        isEnabled())));
+
+        onView(withId(R.id.action_refresh)).perform(click());
+        // Wait for API call to be completed
+        Thread.sleep(10000);
+
+        onView(withId(R.id.content_main))
+                .check(matches(isDisplayed()));
+    }
+
 }

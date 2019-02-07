@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,8 +55,8 @@ public class MainActivity extends DaggerAppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        progressBar.setVisibility(View.VISIBLE);
-        contentMain.setVisibility(View.GONE);
+//        progressBar.setVisibility(View.VISIBLE);
+//        contentMain.setVisibility(View.GONE);
 
         fortuneViewModel = ViewModelProviders.of(this, viewModelFactory).get(FortuneViewModel.class);
 
@@ -64,17 +65,17 @@ public class MainActivity extends DaggerAppCompatActivity {
             fetchFortune();
         });
 
-
-        progressBar.setVisibility(View.GONE);
-
-
         fetchFortune();
 
 
     }
 
     private void fetchFortune() {
-        final Observer<Fortune> fortuneObserver = results -> displayFortune(results);
+        final Observer<Fortune> fortuneObserver = results -> {
+            Log.d("reselts ", results.toString());
+            displayFortune(results);
+
+        };
 
         fortuneViewModel.getFortunes().observe(this, fortuneObserver);
 
